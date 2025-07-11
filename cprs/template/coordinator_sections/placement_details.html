@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Details</title>
+    <style>
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2f00ff;
+        }
+
+        .form-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 10px;
+        }
+
+        .form-control {
+            width:75%;
+            padding: 8px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            margin-top: 10px;
+            color: #fff;
+            border: none;
+            margin-left: 10px;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table th {
+            background-color: #f1f1f1;
+            color: #495057;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Placement Drives</h2>
+
+        <!-- Search form for job drives -->
+        <form method="get" action="" class="form-container">
+            <input type="hidden" name="section" value="placement-details">
+            <input type="text" name="search" placeholder="Search the company..." value="{{ request.GET.search }}" class="form-control">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        <!-- List of Job Drives -->
+        <div class="job-drives mt-3">
+            <h3>Job Drives</h3>
+            <ul>
+                {% for job_drive in job_drives %}
+                    <li>
+                        <a href="?section=placement-details&job_drive_id={{ job_drive.id }}">
+                            {{ job_drive.company }} - {{ job_drive.title }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <li>No job drives available.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- If a job drive is selected, show students who applied -->
+        {% if selected_job_drive %}
+            <h3 class="mt-4">Students Applied for {{ selected_job_drive.title }} in {{ selected_job_drive.company }}</h3>
+
+            <!-- Search form for students within selected job drive -->
+            <form method="get" action="" class="form-container">
+                <input type="hidden" name="section" value="placement-details">
+                <input type="hidden" name="job_drive_id" value="{{ selected_job_drive.id }}">
+                <input type="text" name="search_student" placeholder="Search student..." value="{{ request.GET.search_student }}" class="form-control">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="submit" name="generate_report" class="btn btn-success">Download Report (PDF)</button>
+            </form>
+
+            <!-- Bulk status update form -->
+            <form method="post" action="">
+                {% csrf_token %}
+                <table class="table mt-3">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Student Name</th>
+                            <th>Applied At</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for applied_job in applied_jobs %}
+                            <tr>
+                                <td>{{ applied_job.student.student_id }}</td>
+                                <td>{{ applied_job.student.full_name }}</td>
+                                <td>{{ applied_job.applied_at|date:"d M Y, h:i A" }}</td>
+                                <td>
+                                    <select name="status_{{ applied_job.id }}" class="form-control" style="width: auto;">
+                                        {% for value, display in applied_job.STATUS_CHOICES %}
+                                            <option value="{{ value }}" {% if applied_job.status == value %}selected{% endif %}>
+                                                {{ display }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4">No students have applied yet.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-success">Change All</button>
+            </form>
+        {% endif %}
+    </div>
+</body>
+</html>

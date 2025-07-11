@@ -1,0 +1,37 @@
+# Database file
+db.sqlite3
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Media and uploaded files
+media/
+profile_photos/
+resumes/
+student_photos/
+
+# Static files
+static/
+staticfiles/
+
+# Django migrations
+cprs_app/migrations/
+
+# Temporary files
+*.csv
+*.xlsx
+docs/~$*
+
+# Log files
+*.log
+
+# Local settings
+local_settings.py
+
+# IDE/editor settings
+.vscode/
+
+# Environment variables
+.env
