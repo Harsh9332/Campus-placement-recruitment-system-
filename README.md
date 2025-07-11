@@ -18,3 +18,23 @@ A web-based application built using Python to manage the entire campus placement
 - **Frontend**: HTML, CSS, JavaScript, Bootstrap
 - **Database**: SQLite / MySQL *(update accordingly)*
 - **Other Tools**: Jinja2 Templates, SQLAlchemy (if used)
+
+## Run the Application
+For Flask:
+  python app.py
+
+For Django:
+  python manage.py runserver
+
+Then visit:
+  http://localhost:5000     # Flask
+  or
+  http://127.0.0.1:8000     # Django
+
+
+## 👥 User Roles
+- Admin: Full access to manage companies and students.
+
+- Student: Register, log in, and apply to jobs.
+
+- Company: Post jobs and view applications.
